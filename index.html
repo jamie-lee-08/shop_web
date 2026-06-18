@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Shopzon</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#eaeded;color:#0f1111;font:12px/1.45 Arial,Helvetica,sans-serif}
+  header{background:#131921;color:#fff;display:flex;align-items:center;gap:14px;padding:8px 18px;position:sticky;top:0;z-index:5}
+  header .brand{font-size:18px;font-weight:800}header .brand span{color:#febd69}
+  header .search{flex:1;max-width:620px;display:flex}
+  header .search input{flex:1;border:0;border-radius:4px 0 0 4px;padding:7px 10px}
+  header .search .go{background:#febd69;border-radius:0 4px 4px 0;padding:7px 12px}
+  header .cart{margin-left:auto;font-weight:700;cursor:pointer}
+  .crumb{padding:6px 18px;background:#fff;border-bottom:1px solid #ddd;color:#565959}.crumb a{color:#007185;cursor:pointer}
+  .task{margin:10px 18px;padding:9px 13px;border:1px solid #2f81f7;border-radius:6px;background:#eaf3ff;color:#0b3a6b;font-size:13px}
+  .layout{display:flex;gap:14px;max-width:1560px;margin:6px auto;padding:0 18px}
+  .side{flex:0 0 180px}
+  .side .box{background:#fff;border:1px solid #ddd;border-radius:8px;padding:12px;margin-bottom:12px}
+  .side h4{margin:0 0 6px;font-size:13px}.side .opt{color:#565959;padding:1px 0}
+  .main{flex:1;min-width:0}
+  /* toolbar */
+  .toolbar{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid #ddd;border-radius:8px;padding:8px 12px;margin-bottom:10px;flex-wrap:wrap}
+  .toolbar .grp{display:flex;align-items:center;gap:6px}
+  .toolbar label{color:#565959}
+  .tbtn{border:1px solid #c7c7c7;background:#f7f8f8;border-radius:6px;padding:4px 10px;cursor:pointer;font-weight:600}
+  .tbtn.active{background:#131921;color:#fff;border-color:#131921}
+  .count{margin-left:auto;color:#565959}
+  /* grid view */
+  #items.gridview{display:grid;grid-template-columns:repeat(var(--cols,8),1fr);gap:8px}
+  #items.gridview .it{background:#fff;border:1px solid #ddd;border-radius:7px;padding:7px;cursor:pointer}
+  #items.gridview .it:hover{box-shadow:0 2px 8px rgba(0,0,0,.12)}
+  #items.gridview .it img{width:100%;height:96px;object-fit:cover;border-radius:5px;background:#f3f3f3}
+  #items.gridview .it .t{font-weight:600;margin-top:5px;font-size:11px;height:28px;overflow:hidden;line-height:1.25}
+  #items.gridview .it .meta{color:#565959;font-size:11px}
+  #items.gridview .it .price{font-weight:700}
+  #items.gridview .it .stars{color:#de7921}
+  /* list view */
+  #items.listview{display:flex;flex-direction:column;gap:0}
+  #items.listview .it{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #ddd;border-top:0;padding:7px 12px;cursor:pointer}
+  #items.listview .it:first-child{border-top:1px solid #ddd;border-radius:7px 7px 0 0}
+  #items.listview .it:last-child{border-radius:0 0 7px 7px}
+  #items.listview .it:hover{background:#f7fbff}
+  #items.listview .it img{width:46px;height:46px;object-fit:cover;border-radius:5px;flex:0 0 auto}
+  #items.listview .it .t{flex:1;font-weight:600}
+  #items.listview .it .c{width:120px;color:#565959}
+  #items.listview .it .c.r{color:#de7921}
+  #items.listview .it .price{width:80px;font-weight:700;text-align:right}
+  .price .c0{font-size:10px;vertical-align:top}
+  /* detail / seller / cart */
+  .panel{background:#fff;border:1px solid #ddd;border-radius:8px;padding:22px;display:flex;gap:28px}
+  .panel img{width:340px;height:340px;object-fit:cover;border-radius:8px;background:#f3f3f3}
+  .panel h2{margin:0 0 6px}.btn{display:inline-block;margin-top:14px;background:#ffd814;border:1px solid #fcd200;border-radius:20px;padding:9px 20px;font-weight:700;cursor:pointer}
+  .link{color:#007185;cursor:pointer}.box2{max-width:540px;background:#fff;border:1px solid #ddd;border-radius:8px;padding:22px}
+  .big{font-size:22px;font-weight:800}.muted{color:#565959}.row{margin:5px 0}.stars{color:#de7921;font-weight:700}.hidden{display:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Shop<span>zon</span></div>
+  <div class="search"><input value="men's outerwear" readonly/><div class="go">🔍</div></div>
+  <div class="cart" id="cart-ind">🛒 Cart (0)</div>
+</header>
+<div class="crumb"><a onclick="goCategory()">Home</a> › <a onclick="goCategory()">Clothing</a> › <span id="crumb-tail">Men's Outerwear</span></div>
+<div class="task">🎯 TASK (given to the agent): On Shopzon, add to the cart the green, long-sleeve item whose seller&#x27;s rating is 4.8 or higher priced under $80.</div>
+
+<div class="layout">
+  <div class="side">
+    <div class="box"><h4>Department</h4><div class="opt">‹ Clothing</div><div class="opt">Men's Outerwear</div><div class="opt">T-Shirts</div><div class="opt">Sweaters</div></div>
+    <div class="box"><h4>Price</h4><div class="opt">Under $50</div><div class="opt">$50 – $100</div><div class="opt">$100 – $200</div></div>
+    <div class="box"><h4>Avg. review</h4><div class="opt">★★★★☆ &amp; up</div><div class="opt">★★★☆☆ &amp; up</div></div>
+  </div>
+  <div class="main">
+    <div id="view-category">
+      <div class="toolbar">
+        <div class="grp"><label>View:</label>
+          <span class="tbtn" id="vg" onclick="setView('grid')">▦ Grid</span>
+          <span class="tbtn" id="vl" onclick="setView('list')">☰ List</span>
+        </div>
+        <div class="grp" id="colsgrp"><label>Per row:</label>
+          <span class="tbtn" onclick="setCols(4)">4</span>
+          <span class="tbtn" onclick="setCols(6)">6</span>
+          <span class="tbtn" onclick="setCols(8)">8</span>
+          <span class="tbtn" onclick="setCols(10)">10</span>
+        </div>
+        <span class="count" id="rescount"></span>
+      </div>
+      <div id="items"></div>
+    </div>
+
+    <div id="view-product" class="hidden">
+      <div class="panel"><img id="p-img"/>
+        <div><h2 id="p-title"></h2><div id="p-stars" class="stars"></div>
+          <div class="row"><b>Sleeve:</b> <span id="p-sleeve"></span></div>
+          <div class="row" style="font-size:18px;font-weight:700">$<span id="p-price"></span></div>
+          <div class="row muted">Sold by: <span class="link" id="p-seller"></span></div>
+          <div class="btn" id="addcart">Add to Cart</div>
+          <div class="row"><span class="link" onclick="goCategory()">← Back to results</span></div></div></div>
+    </div>
+    <div id="view-seller" class="hidden">
+      <div class="box2"><div class="big" id="s-name"></div>
+        <div class="row">Seller rating: <span class="stars" id="s-rating"></span></div>
+        <div class="row muted">Location: <span id="s-loc"></span></div>
+        <div class="link row" id="s-back">← Back to product</div></div>
+    </div>
+    <div id="view-cart" class="hidden">
+      <div class="box2"><div class="big">Your Cart</div><div id="cart-list" style="margin-top:8px"></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const PRODUCTS={"p001": {"title": "Cove Lite Cardigan", "sleeve": "Long-sleeve", "price": 167, "rating": 4.4, "seller": "s04", "img": "img/p001.jpg"}, "p002": {"title": "Pine Pro Shirt", "sleeve": "Short-sleeve", "price": 177, "rating": 4.0, "seller": "s11", "img": "img/p002.jpg"}, "p003": {"title": "Harbor Max Cardigan", "sleeve": "Long-sleeve", "price": 167, "rating": 4.8, "seller": "s06", "img": "img/p003.jpg"}, "p004": {"title": "Cove Air Jacket", "sleeve": "Long-sleeve", "price": 39, "rating": 4.4, "seller": "s09", "img": "img/p004.jpg"}, "p005": {"title": "Canyon Field Sweater", "sleeve": "Long-sleeve", "price": 173, "rating": 4.9, "seller": "s02", "img": "img/p005.jpg"}, "p006": {"title": "Harbor Classic Sweater", "sleeve": "Long-sleeve", "price": 143, "rating": 4.3, "seller": "s11", "img": "img/p006.jpg"}, "p007": {"title": "Range Street Jacket", "sleeve": "Long-sleeve", "price": 105, "rating": 4.6, "seller": "s10", "img": "img/p007.jpg"}, "p008": {"title": "Canyon Lite Sweater", "sleeve": "Long-sleeve", "price": 41, "rating": 4.8, "seller": "s08", "img": "img/p008.jpg"}, "p009": {"title": "Ridge Max Jacket", "sleeve": "Long-sleeve", "price": 91, "rating": 4.6, "seller": "s15", "img": "img/p009.jpg"}, "p010": {"title": "Canyon Street Shirt", "sleeve": "Short-sleeve", "price": 61, "rating": 4.5, "seller": "s08", "img": "img/p010.jpg"}, "p011": {"title": "Ridge Classic Jacket", "sleeve": "Long-sleeve", "price": 207, "rating": 4.1, "seller": "s07", "img": "img/p011.jpg"}, "p012": {"title": "Canyon Eco Sweater", "sleeve": "Long-sleeve", "price": 159, "rating": 4.1, "seller": "s03", "img": "img/p012.jpg"}, "p013": {"title": "Aspen Eco Shirt", "sleeve": "Short-sleeve", "price": 109, "rating": 4.6, "seller": "s07", "img": "img/p013.jpg"}, "p014": {"title": "Cove Classic Hoodie", "sleeve": "Long-sleeve", "price": 77, "rating": 4.5, "seller": "s01", "img": "img/p014.jpg"}, "p015": {"title": "Cove Field Sweater", "sleeve": "Long-sleeve", "price": 91, "rating": 3.8, "seller": "s07", "img": "img/p015.jpg"}, "p016": {"title": "Range Street Cardigan", "sleeve": "Long-sleeve", "price": 51, "rating": 4.6, "seller": "s09", "img": "img/p016.jpg"}, "p017": {"title": "Cedar Max Jacket", "sleeve": "Long-sleeve", "price": 193, "rating": 4.7, "seller": "s07", "img": "img/p017.jpg"}, "p018": {"title": "Summit Max Shirt", "sleeve": "Short-sleeve", "price": 181, "rating": 4.2, "seller": "s04", "img": "img/p018.jpg"}, "p019": {"title": "Canyon Classic Jacket", "sleeve": "Long-sleeve", "price": 47, "rating": 4.2, "seller": "s01", "img": "img/p019.jpg"}, "p020": {"title": "Trail Lite Coat", "sleeve": "Long-sleeve", "price": 111, "rating": 4.5, "seller": "s02", "img": "img/p020.jpg"}, "p021": {"title": "Trail Field Hoodie", "sleeve": "Long-sleeve", "price": 107, "rating": 4.5, "seller": "s08", "img": "img/p021.jpg"}, "p022": {"title": "Forge Max Coat", "sleeve": "Long-sleeve", "price": 141, "rating": 4.3, "seller": "s02", "img": "img/p022.jpg"}, "p023": {"title": "Harbor Field Jacket", "sleeve": "Long-sleeve", "price": 141, "rating": 4.7, "seller": "s03", "img": "img/p023.jpg"}, "p024": {"title": "Atlas Street Sweater", "sleeve": "Long-sleeve", "price": 55, "rating": 4.6, "seller": "s15", "img": "img/p024.jpg"}, "p025": {"title": "Ridge Lite Jacket", "sleeve": "Long-sleeve", "price": 197, "rating": 4.7, "seller": "s09", "img": "img/p025.jpg"}, "p026": {"title": "Frost Air Shirt", "sleeve": "Short-sleeve", "price": 155, "rating": 4.4, "seller": "s09", "img": "img/p026.jpg"}, "p027": {"title": "Crest Air Shirt", "sleeve": "Short-sleeve", "price": 79, "rating": 4.7, "seller": "s12", "img": "img/p027.jpg"}, "p028": {"title": "Forge Street Hoodie", "sleeve": "Long-sleeve", "price": 205, "rating": 3.8, "seller": "s01", "img": "img/p028.jpg"}, "p029": {"title": "Metro Street Hoodie", "sleeve": "Long-sleeve", "price": 133, "rating": 4.7, "seller": "s12", "img": "img/p029.jpg"}, "p030": {"title": "Frost Lite Shirt", "sleeve": "Short-sleeve", "price": 75, "rating": 3.9, "seller": "s08", "img": "img/p030.jpg"}, "p031": {"title": "Forge Pro Hoodie", "sleeve": "Long-sleeve", "price": 141, "rating": 4.8, "seller": "s06", "img": "img/p031.jpg"}, "p032": {"title": "Summit Eco Jacket", "sleeve": "Long-sleeve", "price": 201, "rating": 4.6, "seller": "s08", "img": "img/p032.jpg"}, "p033": {"title": "Harbor Lite Hoodie", "sleeve": "Long-sleeve", "price": 203, "rating": 4.2, "seller": "s07", "img": "img/p033.jpg"}, "p034": {"title": "Cove Classic Jacket", "sleeve": "Long-sleeve", "price": 25, "rating": 4.0, "seller": "s15", "img": "img/p034.jpg"}, "p035": {"title": "Trail Max Shirt", "sleeve": "Short-sleeve", "price": 187, "rating": 4.8, "seller": "s03", "img": "img/p035.jpg"}, "p036": {"title": "Alpine Pro Cardigan", "sleeve": "Long-sleeve", "price": 203, "rating": 4.5, "seller": "s09", "img": "img/p036.jpg"}, "p037": {"title": "Metro Air Jacket", "sleeve": "Long-sleeve", "price": 25, "rating": 4.1, "seller": "s05", "img": "img/p037.jpg"}, "p038": {"title": "Range Street Sweater", "sleeve": "Long-sleeve", "price": 85, "rating": 4.4, "seller": "s14", "img": "img/p038.jpg"}, "p039": {"title": "Frost Max Jacket", "sleeve": "Long-sleeve", "price": 187, "rating": 4.4, "seller": "s15", "img": "img/p039.jpg"}, "p040": {"title": "Atlas Classic Sweater", "sleeve": "Long-sleeve", "price": 155, "rating": 4.0, "seller": "s09", "img": "img/p040.jpg"}, "p041": {"title": "Cove Pro Jacket", "sleeve": "Long-sleeve", "price": 57, "rating": 4.0, "seller": "s08", "img": "img/p041.jpg"}, "p042": {"title": "Nomad Pro Jacket", "sleeve": "Long-sleeve", "price": 101, "rating": 4.6, "seller": "s09", "img": "img/p042.jpg"}, "p043": {"title": "Summit Pro Cardigan", "sleeve": "Long-sleeve", "price": 81, "rating": 4.0, "seller": "s01", "img": "img/p043.jpg"}, "p044": {"title": "Nomad Pro Coat", "sleeve": "Long-sleeve", "price": 35, "rating": 4.3, "seller": "s10", "img": "img/p044.jpg"}, "p045": {"title": "Metro Field Sweater", "sleeve": "Long-sleeve", "price": 133, "rating": 4.4, "seller": "s13", "img": "img/p045.jpg"}, "p046": {"title": "Urban Field Sweater", "sleeve": "Long-sleeve", "price": 161, "rating": 4.8, "seller": "s04", "img": "img/p046.jpg"}, "p047": {"title": "Summit Eco Shirt", "sleeve": "Short-sleeve", "price": 131, "rating": 4.1, "seller": "s11", "img": "img/p047.jpg"}, "p048": {"title": "Metro Field Hoodie", "sleeve": "Long-sleeve", "price": 49, "rating": 4.8, "seller": "s03", "img": "img/p048.jpg"}, "p049": {"title": "Trail Max Shirt", "sleeve": "Short-sleeve", "price": 75, "rating": 4.6, "seller": "s02", "img": "img/p049.jpg"}, "p050": {"title": "Cove Air Shirt", "sleeve": "Short-sleeve", "price": 59, "rating": 4.6, "seller": "s09", "img": "img/p050.jpg"}, "p051": {"title": "Metro Street Shirt", "sleeve": "Short-sleeve", "price": 99, "rating": 3.9, "seller": "s06", "img": "img/p051.jpg"}, "p052": {"title": "Canyon Max Jacket", "sleeve": "Long-sleeve", "price": 199, "rating": 3.8, "seller": "s06", "img": "img/p052.jpg"}, "p053": {"title": "Atlas Lite Sweater", "sleeve": "Long-sleeve", "price": 47, "rating": 4.9, "seller": "s13", "img": "img/p053.jpg"}, "p054": {"title": "Summit Lite Hoodie", "sleeve": "Long-sleeve", "price": 85, "rating": 4.1, "seller": "s15", "img": "img/p054.jpg"}, "p055": {"title": "Trail Eco Hoodie", "sleeve": "Long-sleeve", "price": 191, "rating": 4.7, "seller": "s05", "img": "img/p055.jpg"}, "p056": {"title": "Atlas Max Shirt", "sleeve": "Short-sleeve", "price": 197, "rating": 4.2, "seller": "s05", "img": "img/p056.jpg"}, "p057": {"title": "Cove Eco Jacket", "sleeve": "Long-sleeve", "price": 37, "rating": 4.1, "seller": "s01", "img": "img/p057.jpg"}, "p058": {"title": "Pine Air Jacket", "sleeve": "Long-sleeve", "price": 35, "rating": 4.1, "seller": "s02", "img": "img/p058.jpg"}, "p059": {"title": "Nomad Eco Shirt", "sleeve": "Short-sleeve", "price": 87, "rating": 4.5, "seller": "s01", "img": "img/p059.jpg"}, "p060": {"title": "Summit Classic Sweater", "sleeve": "Long-sleeve", "price": 85, "rating": 3.9, "seller": "s04", "img": "img/p060.jpg"}, "p061": {"title": "Atlas Air Jacket", "sleeve": "Long-sleeve", "price": 93, "rating": 4.3, "seller": "s11", "img": "img/p061.jpg"}, "p062": {"title": "Alpine Field Hoodie", "sleeve": "Long-sleeve", "price": 27, "rating": 3.8, "seller": "s12", "img": "img/p062.jpg"}, "p063": {"title": "Metro Max Sweater", "sleeve": "Long-sleeve", "price": 81, "rating": 4.8, "seller": "s02", "img": "img/p063.jpg"}, "p064": {"title": "Nomad Eco Shirt", "sleeve": "Short-sleeve", "price": 147, "rating": 4.1, "seller": "s04", "img": "img/p064.jpg"}, "p065": {"title": "Trail Eco Hoodie", "sleeve": "Long-sleeve", "price": 107, "rating": 4.9, "seller": "s14", "img": "img/p065.jpg"}, "p066": {"title": "Aspen Eco Jacket", "sleeve": "Long-sleeve", "price": 59, "rating": 3.9, "seller": "s11", "img": "img/p066.jpg"}, "p067": {"title": "Ridge Air Shirt", "sleeve": "Short-sleeve", "price": 195, "rating": 4.1, "seller": "s08", "img": "img/p067.jpg"}, "p068": {"title": "Canyon Pro Hoodie", "sleeve": "Long-sleeve", "price": 85, "rating": 4.2, "seller": "s06", "img": "img/p068.jpg"}, "p069": {"title": "Cedar Field Cardigan", "sleeve": "Long-sleeve", "price": 73, "rating": 4.2, "seller": "s01", "img": "img/p069.jpg"}, "p070": {"title": "Forge Field Shirt", "sleeve": "Short-sleeve", "price": 147, "rating": 4.5, "seller": "s04", "img": "img/p070.jpg"}, "p071": {"title": "Pine Field Sweater", "sleeve": "Long-sleeve", "price": 41, "rating": 4.0, "seller": "s10", "img": "img/p071.jpg"}, "p072": {"title": "Ridge Field Jacket", "sleeve": "Long-sleeve", "price": 179, "rating": 4.1, "seller": "s10", "img": "img/p072.jpg"}, "p073": {"title": "Trail Eco Sweater", "sleeve": "Long-sleeve", "price": 101, "rating": 4.6, "seller": "s08", "img": "img/p073.jpg"}, "p074": {"title": "Crest Classic Jacket", "sleeve": "Long-sleeve", "price": 29, "rating": 4.7, "seller": "s12", "img": "img/p074.jpg"}, "p075": {"title": "Atlas Classic Sweater", "sleeve": "Long-sleeve", "price": 153, "rating": 4.6, "seller": "s10", "img": "img/p075.jpg"}, "p076": {"title": "Range Air Jacket", "sleeve": "Long-sleeve", "price": 39, "rating": 3.8, "seller": "s03", "img": "img/p076.jpg"}, "p077": {"title": "Drift Max Shirt", "sleeve": "Short-sleeve", "price": 161, "rating": 3.9, "seller": "s01", "img": "img/p077.jpg"}, "p078": {"title": "Forge Field Cardigan", "sleeve": "Long-sleeve", "price": 19, "rating": 4.3, "seller": "s02", "img": "img/p078.jpg"}, "p079": {"title": "Pine Lite Sweater", "sleeve": "Long-sleeve", "price": 209, "rating": 4.6, "seller": "s05", "img": "img/p079.jpg"}, "p080": {"title": "Urban Air Jacket", "sleeve": "Long-sleeve", "price": 77, "rating": 4.6, "seller": "s08", "img": "img/p080.jpg"}, "p081": {"title": "Pine Max Sweater", "sleeve": "Long-sleeve", "price": 193, "rating": 4.1, "seller": "s01", "img": "img/p081.jpg"}, "p082": {"title": "Metro Lite Jacket", "sleeve": "Long-sleeve", "price": 171, "rating": 4.0, "seller": "s05", "img": "img/p082.jpg"}, "p083": {"title": "Trail Pro Jacket", "sleeve": "Long-sleeve", "price": 141, "rating": 3.9, "seller": "s05", "img": "img/p083.jpg"}, "p084": {"title": "Forge Field Coat", "sleeve": "Long-sleeve", "price": 199, "rating": 4.4, "seller": "s08", "img": "img/p084.jpg"}, "p085": {"title": "Summit Air Shirt", "sleeve": "Short-sleeve", "price": 97, "rating": 4.9, "seller": "s15", "img": "img/p085.jpg"}, "p086": {"title": "Canyon Lite Sweater", "sleeve": "Long-sleeve", "price": 147, "rating": 4.9, "seller": "s08", "img": "img/p086.jpg"}, "p087": {"title": "Metro Lite Hoodie", "sleeve": "Long-sleeve", "price": 167, "rating": 3.9, "seller": "s12", "img": "img/p087.jpg"}, "p088": {"title": "Frost Classic Sweater", "sleeve": "Long-sleeve", "price": 173, "rating": 4.7, "seller": "s09", "img": "img/p088.jpg"}, "p089": {"title": "Frost Air Hoodie", "sleeve": "Long-sleeve", "price": 145, "rating": 4.8, "seller": "s08", "img": "img/p089.jpg"}, "p090": {"title": "Alpine Max Shirt", "sleeve": "Short-sleeve", "price": 193, "rating": 4.3, "seller": "s05", "img": "img/p090.jpg"}, "p091": {"title": "Drift Street Jacket", "sleeve": "Long-sleeve", "price": 49, "rating": 4.7, "seller": "s01", "img": "img/p091.jpg"}, "p092": {"title": "Drift Lite Shirt", "sleeve": "Short-sleeve", "price": 69, "rating": 4.6, "seller": "s15", "img": "img/p092.jpg"}, "p093": {"title": "Pine Eco Jacket", "sleeve": "Long-sleeve", "price": 117, "rating": 4.9, "seller": "s10", "img": "img/p093.jpg"}, "p094": {"title": "Vertex Field Jacket", "sleeve": "Long-sleeve", "price": 31, "rating": 4.1, "seller": "s01", "img": "img/p094.jpg"}, "p095": {"title": "Trail Air Jacket", "sleeve": "Long-sleeve", "price": 87, "rating": 4.3, "seller": "s06", "img": "img/p095.jpg"}, "p096": {"title": "Vertex Pro Hoodie", "sleeve": "Long-sleeve", "price": 179, "rating": 4.2, "seller": "s15", "img": "img/p096.jpg"}, "p097": {"title": "Pine Pro Cardigan", "sleeve": "Long-sleeve", "price": 205, "rating": 4.3, "seller": "s10", "img": "img/p097.jpg"}, "p098": {"title": "Ridge Max Jacket", "sleeve": "Long-sleeve", "price": 31, "rating": 4.8, "seller": "s09", "img": "img/p098.jpg"}, "p099": {"title": "Vertex Street Jacket", "sleeve": "Long-sleeve", "price": 91, "rating": 4.1, "seller": "s12", "img": "img/p099.jpg"}, "p100": {"title": "Urban Field Hoodie", "sleeve": "Long-sleeve", "price": 141, "rating": 4.4, "seller": "s07", "img": "img/p100.jpg"}};
+const SELLERS={"s01": {"name": "NorthPeak Gear", "rating": 4.3, "loc": "Incheon"}, "s02": {"name": "CityStyle", "rating": 4.4, "loc": "Seoul"}, "s03": {"name": "TrailCo", "rating": 4.1, "loc": "Busan"}, "s04": {"name": "RetroWear", "rating": 4.3, "loc": "Seoul"}, "s05": {"name": "WarmCore", "rating": 4.9, "loc": "Daegu"}, "s06": {"name": "DryFit", "rating": 4.0, "loc": "Suwon"}, "s07": {"name": "UrbanThread", "rating": 4.4, "loc": "Daegu"}, "s08": {"name": "PeakOutfit", "rating": 4.1, "loc": "Suwon"}, "s09": {"name": "MapleWear", "rating": 4.1, "loc": "Busan"}, "s10": {"name": "CoreApparel", "rating": 4.9, "loc": "Seoul"}, "s11": {"name": "BlueRidge", "rating": 4.5, "loc": "Suwon"}, "s12": {"name": "SunsetCo", "rating": 4.0, "loc": "Daegu"}, "s13": {"name": "NovaStyle", "rating": 4.0, "loc": "Incheon"}, "s14": {"name": "IronGate", "rating": 4.3, "loc": "Incheon"}, "s15": {"name": "FreshFit", "rating": 4.5, "loc": "Daejeon"}};
+const ORDER=["p001", "p002", "p003", "p004", "p005", "p006", "p007", "p008", "p009", "p010", "p011", "p012", "p013", "p014", "p015", "p016", "p017", "p018", "p019", "p020", "p021", "p022", "p023", "p024", "p025", "p026", "p027", "p028", "p029", "p030", "p031", "p032", "p033", "p034", "p035", "p036", "p037", "p038", "p039", "p040", "p041", "p042", "p043", "p044", "p045", "p046", "p047", "p048", "p049", "p050", "p051", "p052", "p053", "p054", "p055", "p056", "p057", "p058", "p059", "p060", "p061", "p062", "p063", "p064", "p065", "p066", "p067", "p068", "p069", "p070", "p071", "p072", "p073", "p074", "p075", "p076", "p077", "p078", "p079", "p080", "p081", "p082", "p083", "p084", "p085", "p086", "p087", "p088", "p089", "p090", "p091", "p092", "p093", "p094", "p095", "p096", "p097", "p098", "p099", "p100"];
+window.__state={ page:"CATEGORY", current:null, cart:[], view:"grid", cols:8 };
+const $=id=>document.getElementById(id);
+function show(v){ for(const x of ["category","product","seller","cart"]) $("view-"+x).classList.toggle("hidden", x!==v); }
+function stars(n){ return "★".repeat(Math.round(n))+"☆".repeat(5-Math.round(n))+" "+n.toFixed(1); }
+function updCart(){ $("cart-ind").textContent="🛒 Cart ("+window.__state.cart.length+")"; }
+function renderItems(){
+  const c=$("items"); const view=window.__state.view; c.className=view+"view"; c.style.setProperty("--cols",window.__state.cols);
+  $("rescount").textContent=ORDER.length+" results";
+  $("vg").classList.toggle("active",view==="grid"); $("vl").classList.toggle("active",view==="list");
+  $("colsgrp").style.display = view==="grid" ? "flex":"none";
+  c.innerHTML="";
+  for(const id of ORDER){ const p=PRODUCTS[id]; const d=document.createElement("div"); d.className="it"; d.id="card-"+id; d.onclick=()=>openProduct(id);
+    if(view==="grid"){
+      d.innerHTML='<img src="'+p.img+'" alt="product photo"/><div class="t">'+p.title+'</div>'+
+        '<div class="meta">'+p.sleeve+'</div><div class="stars">'+stars(p.rating)+'</div>'+
+        '<div class="price"><span class="c0">$</span>'+p.price+'</div>';
+    } else {
+      d.innerHTML='<img src="'+p.img+'" alt="product photo"/><div class="t">'+p.title+'</div>'+
+        '<div class="c">'+p.sleeve+'</div><div class="c r">'+stars(p.rating)+'</div>'+
+        '<div class="c">'+SELLERS[p.seller].name+'</div><div class="price">$'+p.price+'</div>';
+    }
+    c.appendChild(d);
+  }
+}
+function setView(v){ window.__state.view=v; renderItems(); }
+function setCols(n){ window.__state.cols=n; renderItems(); }
+function openProduct(id){ const p=PRODUCTS[id]; window.__state.page="PRODUCT"; window.__state.current=id;
+  $("p-img").src=p.img; $("p-title").textContent=p.title; $("p-stars").textContent=stars(p.rating);
+  $("p-sleeve").textContent=p.sleeve; $("p-price").textContent=p.price;
+  const s=SELLERS[p.seller]; $("p-seller").textContent=s.name; $("p-seller").onclick=()=>openSeller(p.seller);
+  $("crumb-tail").textContent=p.title; show("product"); window.scrollTo(0,0); }
+function openSeller(sid){ const s=SELLERS[sid]; window.__state.page="SELLER";
+  $("s-name").textContent=s.name; $("s-rating").textContent=stars(s.rating); $("s-loc").textContent=s.loc;
+  $("s-back").onclick=()=>openProduct(window.__state.current); show("seller"); window.scrollTo(0,0); }
+$("addcart").onclick=()=>{ const id=window.__state.current; if(!window.__state.cart.includes(id)) window.__state.cart.push(id);
+  updCart(); window.__state.page="CART"; renderCart(); show("cart"); };
+function renderCart(){ $("cart-list").innerHTML=window.__state.cart.length?window.__state.cart.map(id=>"• "+PRODUCTS[id].title).join("<br>"):"(empty)"; }
+$("cart-ind").onclick=()=>{ window.__state.page="CART"; renderCart(); show("cart"); };
+function goCategory(){ window.__state.page="CATEGORY"; $("crumb-tail").textContent="Men's Outerwear"; show("category"); renderItems(); window.scrollTo(0,0); }
+renderItems(); updCart(); show("category");
+</script>
+</body>
+</html>
